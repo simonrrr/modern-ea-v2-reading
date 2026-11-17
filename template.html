@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modern EA Reading</title>
+<meta name="description" content="Further reading for the talk Modern Enterprise Architecture v2: Architecting for humans, with free copies where they exist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,700;0,14..32,800;1,14..32,400&display=swap">
+<style>
+/* The deck's look. Light: the yellow slides (black type, amber for people and emphasis). Dark: the black slides (yellow type). */
+:root {
+  --bg: #FEF155; --card: #FFFCE3; --ink: #000000; --muted: #3D3A1E;
+  --accent: #8A4700; --amber: #B86000; --bad: #8A2A12; --good: #000000;
+  --chip: #FEF155; --line: rgba(0, 0, 0, .18);
+  --display: "Akkurat Pro", "Akkurat", "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --body: "Akkurat Pro", "Akkurat", "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000; --card: #1A1A1A; --ink: #FEF155; --muted: #D9D2A0; --accent: #F0A040; --amber: #F0A040;
+    --bad: #F08A73; --good: #FEF155; --chip: #2E2E2E; --line: rgba(254, 241, 85, .2);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --card: #1A1A1A; --ink: #FEF155; --muted: #D9D2A0; --accent: #F0A040; --amber: #F0A040;
+  --bad: #F08A73; --good: #FEF155; --chip: #2E2E2E; --line: rgba(254, 241, 85, .2);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--ink); font: 1.0625rem/1.5 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 3rem;
+}
+.wrap { max-width: 60rem; margin: 0 auto; display: grid; gap: 2rem; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: -.035em; }
+h1 { font-size: clamp(2.2rem, 6vw, 4.25rem); line-height: 1; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(1.4rem, 3.2vw, 2rem); line-height: 1.1; margin: 0 0 1rem; text-wrap: balance; scroll-margin-top: 1rem; }
+header { display: grid; grid-template-columns: 1fr auto; gap: 1rem 2rem; align-items: end; }
+header .boat { width: clamp(84px, 14vw, 140px); height: auto; }
+header .boat .hull, header .boat .mast { fill: var(--ink); }
+header .boat .sail { fill: var(--amber); }
+header .boat .sea { stroke: var(--ink); }
+.kicker { margin: 0 0 .6rem; font-weight: 700; color: var(--accent); }
+.lede { margin: .9rem 0 0; max-width: 42rem; font-size: 1.2rem; grid-column: 1 / -1; }
+.lede a { color: inherit; text-underline-offset: 3px; }
+.p { color: var(--accent); }
+.controls { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--card); border-radius: 999px; padding: 4px; gap: 2px; }
+.seg button {
+  font: 700 1rem var(--body); border: 0; cursor: pointer; color: var(--ink); background: transparent;
+  padding: .45rem .95rem; border-radius: 999px;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+nav { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-weight: 700; }
+nav a { color: var(--ink); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.list { display: grid; gap: 1rem; }
+.card { background: var(--card); padding: 1.25rem 1.5rem; display: grid; gap: .6rem; min-width: 0; border-left: 6px solid var(--ink); }
+.card[hidden] { display: none; }
+.cite { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.slides { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.slides li { background: var(--chip); padding: .1rem .55rem; border-radius: 4px; font-size: .9rem; overflow-wrap: anywhere; }
+.what { margin: 0; }
+.caveat { margin: 0; color: var(--muted); }
+.caveat b { color: var(--bad); margin-right: .25rem; }
+.links { display: flex; flex-wrap: wrap; gap: .5rem; margin: .25rem 0 0; }
+.btn {
+  display: inline-block; font-weight: 700; text-decoration: none; color: var(--ink);
+  padding: .35rem .85rem; border-radius: 999px; box-shadow: inset 0 0 0 2px var(--ink);
+}
+.btn.free, .btn.web { background: var(--ink); color: var(--bg); box-shadow: none; }
+.btn.borrow { background: #B86000; color: #fff; box-shadow: none; }
+.btn.buy { background: transparent; box-shadow: inset 0 0 0 2px var(--ink); border-radius: 4px; }
+.btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.key { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin: 0; color: var(--muted); }
+.key .btn { pointer-events: none; padding: .15rem .6rem; font-size: .9rem; }
+.key .k { white-space: nowrap; }
+.key .k .btn { margin-right: .35rem; }
+.empty { background: var(--card); padding: 1.25rem 1.5rem; margin: 0; }
+footer { color: var(--muted); font-size: .95rem; display: grid; gap: .4rem; }
+footer p { margin: 0; }
+footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="kicker">Modern Enterprise Architecture v2<span class="p">:</span> Architecting for humans</p>
+      <h1>Further reading<span class="p">.</span></h1>
+    </div>
+    <svg class="boat" viewBox="0 0 140 120" aria-hidden="true">
+      <path class="sail" d="M72 8 L72 84 L118 84 Z"/>
+      <path class="sail" d="M66 20 L66 84 L30 84 Z"/>
+      <rect class="mast" x="67" y="4" width="4" height="84"/>
+      <path class="hull" d="M14 90 L126 90 L112 106 L30 106 Z"/>
+      <path class="sea" d="M0 114 Q17.5 106 35 114 T70 114 T105 114 T140 114" fill="none" stroke-width="4"/>
+    </svg>
+    <p class="lede">Everything the slides cite<span class="p">,</span> what it says<span class="p">,</span> and where to read it<span class="p">.</span> Each link goes to the cheapest way to read it<span class="p">:</span> a free copy if there is one<span class="p">;</span> if not<span class="p">,</span> a free library loan from archive<span class="p">.</span>org<span class="p">;</span> and only if neither exists<span class="p">,</span> the publisher or a shop<span class="p">.</span></p>
+  </header>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Show">
+      <button type="button" data-f="all">All <!--N--></button>
+      <button type="button" data-f="free">Free to read</button>
+      <button type="button" data-f="borrow">Borrow</button>
+    </div>
+    <p class="key">
+      <span class="k"><span class="btn free">free</span> free copy, web page or video</span>
+      <span class="k"><span class="btn borrow">borrow</span> archive.org, free account</span>
+      <span class="k"><span class="btn">paywall</span> publisher or subscription</span>
+      <span class="k"><span class="btn buy">buy</span> a shop</span>
+    </p>
+  </div>
+
+  <nav aria-label="Sections">
+<!--NAV-->
+  </nav>
+
+<!--BODY-->
+  <p class="empty" id="empty" hidden>Nothing here with that kind of link<span class="p">.</span></p>
+
+  <footer>
+    <p>By Simon Rohrer<span class="p">.</span> Sources from the November 2026 edit of the talk<span class="p">,</span> given at the iSAQB Software Architecture Gathering<span class="p">,</span> Berlin<span class="p">,</span> in slide order<span class="p">.</span> Links checked <!--CHECKED--><span class="p">.</span></p>
+    <p>Where a slide and its source disagree on a date<span class="p">,</span> a title or the wording<span class="p">,</span> the citation here follows the source and the note says what the slide has<span class="p">.</span> Posts and talks from 2026 are early reports on a practice that is still changing<span class="p">;</span> read them with their dates<span class="p">.</span></p>
+    <p>Free copies are author<span class="p">,</span> repository<span class="p">,</span> publisher or course-page versions<span class="p">,</span> or older copies saved by the Wayback Machine<span class="p">.</span> Borrowing on archive.org needs a free account and lends one copy at a time<span class="p">.</span> The amazon.de links are plain searches<span class="p">,</span> not affiliate links<span class="p">;</span> your local library or bookshop works just as well<span class="p">.</span></p>
+  </footer>
+</div>
+
+<script>
+const buttons = [...document.querySelectorAll(".seg button")];
+const cards = [...document.querySelectorAll(".card")];
+const sections = [...document.querySelectorAll("section")];
+const empty = document.getElementById("empty");
+
+function show(f) {
+  buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.f === f)));
+  cards.forEach(c => { c.hidden = f !== "all" && !c.dataset.kinds.split(" ").includes(f); });
+  sections.forEach(s => { s.hidden = !s.querySelector(".card:not([hidden])"); });
+  empty.hidden = cards.some(c => !c.hidden);
+  try { localStorage.setItem("mea-reading-filter", f); } catch (e) {}
+}
+
+buttons.forEach(b => b.addEventListener("click", () => show(b.dataset.f)));
+let start = "all";
+try { start = localStorage.getItem("mea-reading-filter") || "all"; } catch (e) {}
+show(["all", "free", "borrow"].includes(start) ? start : "all");
+</script>
+</body>
+</html>

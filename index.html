@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Modern EA Reading</title>
+<meta name="description" content="Further reading for the talk Modern Enterprise Architecture v2: Architecting for humans, with free copies where they exist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,700;0,14..32,800;1,14..32,400&display=swap">
+<style>
+/* The deck's look. Light: the yellow slides (black type, amber for people and emphasis). Dark: the black slides (yellow type). */
+:root {
+  --bg: #FEF155; --card: #FFFCE3; --ink: #000000; --muted: #3D3A1E;
+  --accent: #8A4700; --amber: #B86000; --bad: #8A2A12; --good: #000000;
+  --chip: #FEF155; --line: rgba(0, 0, 0, .18);
+  --display: "Akkurat Pro", "Akkurat", "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --body: "Akkurat Pro", "Akkurat", "Inter", "Helvetica Neue", Arial, system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000; --card: #1A1A1A; --ink: #FEF155; --muted: #D9D2A0; --accent: #F0A040; --amber: #F0A040;
+    --bad: #F08A73; --good: #FEF155; --chip: #2E2E2E; --line: rgba(254, 241, 85, .2);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000000; --card: #1A1A1A; --ink: #FEF155; --muted: #D9D2A0; --accent: #F0A040; --amber: #F0A040;
+  --bad: #F08A73; --good: #FEF155; --chip: #2E2E2E; --line: rgba(254, 241, 85, .2);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--ink); font: 1.0625rem/1.5 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 2.5rem 3rem;
+}
+.wrap { max-width: 60rem; margin: 0 auto; display: grid; gap: 2rem; }
+h1, h2 { font-family: var(--display); font-weight: 800; letter-spacing: -.035em; }
+h1 { font-size: clamp(2.2rem, 6vw, 4.25rem); line-height: 1; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(1.4rem, 3.2vw, 2rem); line-height: 1.1; margin: 0 0 1rem; text-wrap: balance; scroll-margin-top: 1rem; }
+header { display: grid; grid-template-columns: 1fr auto; gap: 1rem 2rem; align-items: end; }
+header .boat { width: clamp(84px, 14vw, 140px); height: auto; }
+header .boat .hull, header .boat .mast { fill: var(--ink); }
+header .boat .sail { fill: var(--amber); }
+header .boat .sea { stroke: var(--ink); }
+.kicker { margin: 0 0 .6rem; font-weight: 700; color: var(--accent); }
+.lede { margin: .9rem 0 0; max-width: 42rem; font-size: 1.2rem; grid-column: 1 / -1; }
+.lede a { color: inherit; text-underline-offset: 3px; }
+.p { color: var(--accent); }
+.controls { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--card); border-radius: 999px; padding: 4px; gap: 2px; }
+.seg button {
+  font: 700 1rem var(--body); border: 0; cursor: pointer; color: var(--ink); background: transparent;
+  padding: .45rem .95rem; border-radius: 999px;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+nav { display: flex; flex-wrap: wrap; gap: .4rem 1rem; font-weight: 700; }
+nav a { color: var(--ink); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.list { display: grid; gap: 1rem; }
+.card { background: var(--card); padding: 1.25rem 1.5rem; display: grid; gap: .6rem; min-width: 0; border-left: 6px solid var(--ink); }
+.card[hidden] { display: none; }
+.cite { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.slides { display: flex; flex-wrap: wrap; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.slides li { background: var(--chip); padding: .1rem .55rem; border-radius: 4px; font-size: .9rem; overflow-wrap: anywhere; }
+.what { margin: 0; }
+.caveat { margin: 0; color: var(--muted); }
+.caveat b { color: var(--bad); margin-right: .25rem; }
+.links { display: flex; flex-wrap: wrap; gap: .5rem; margin: .25rem 0 0; }
+.btn {
+  display: inline-block; font-weight: 700; text-decoration: none; color: var(--ink);
+  padding: .35rem .85rem; border-radius: 999px; box-shadow: inset 0 0 0 2px var(--ink);
+}
+.btn.free, .btn.web { background: var(--ink); color: var(--bg); box-shadow: none; }
+.btn.borrow { background: #B86000; color: #fff; box-shadow: none; }
+.btn.buy { background: transparent; box-shadow: inset 0 0 0 2px var(--ink); border-radius: 4px; }
+.btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.key { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin: 0; color: var(--muted); }
+.key .btn { pointer-events: none; padding: .15rem .6rem; font-size: .9rem; }
+.key .k { white-space: nowrap; }
+.key .k .btn { margin-right: .35rem; }
+.empty { background: var(--card); padding: 1.25rem 1.5rem; margin: 0; }
+footer { color: var(--muted); font-size: .95rem; display: grid; gap: .4rem; }
+footer p { margin: 0; }
+footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="kicker">Modern Enterprise Architecture v2<span class="p">:</span> Architecting for humans</p>
+      <h1>Further reading<span class="p">.</span></h1>
+    </div>
+    <svg class="boat" viewBox="0 0 140 120" aria-hidden="true">
+      <path class="sail" d="M72 8 L72 84 L118 84 Z"/>
+      <path class="sail" d="M66 20 L66 84 L30 84 Z"/>
+      <rect class="mast" x="67" y="4" width="4" height="84"/>
+      <path class="hull" d="M14 90 L126 90 L112 106 L30 106 Z"/>
+      <path class="sea" d="M0 114 Q17.5 106 35 114 T70 114 T105 114 T140 114" fill="none" stroke-width="4"/>
+    </svg>
+    <p class="lede">Everything the slides cite<span class="p">,</span> what it says<span class="p">,</span> and where to read it<span class="p">.</span> Each link goes to the cheapest way to read it<span class="p">:</span> a free copy if there is one<span class="p">;</span> if not<span class="p">,</span> a free library loan from archive<span class="p">.</span>org<span class="p">;</span> and only if neither exists<span class="p">,</span> the publisher or a shop<span class="p">.</span></p>
+  </header>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Show">
+      <button type="button" data-f="all">All 58</button>
+      <button type="button" data-f="free">Free to read</button>
+      <button type="button" data-f="borrow">Borrow</button>
+    </div>
+    <p class="key">
+      <span class="k"><span class="btn free">free</span> free copy, web page or video</span>
+      <span class="k"><span class="btn borrow">borrow</span> archive.org, free account</span>
+      <span class="k"><span class="btn">paywall</span> publisher or subscription</span>
+      <span class="k"><span class="btn buy">buy</span> a shop</span>
+    </p>
+  </div>
+
+  <nav aria-label="Sections">
+<a href="#before-we-start">Before we start</a>
+<a href="#part-1">Part 1</a>
+<a href="#part-2">Part 2</a>
+<a href="#part-3">Part 3</a>
+<a href="#to-close">To close</a>
+  </nav>
+
+<section id="before-we-start"><h2>Before we start<span class="p">:</span> what changed</h2>
+<div class="list">
+<article class="card" data-kinds="free">
+  <p class="cite">Dave Snowden (12 May 2026). Three without resolution? <i>The Cynefin Company</i> (blog).</p>
+  <ul class="slides" aria-label="On the slides"><li>Warning! Lots of quotes, many using the word ‘complexity’</li></ul>
+  <p class="what">Snowden introduces the triquetra form of Cynefin: “Cynefin has always been a triquetra without knowing it.” Three zones, Order, Complex and Chaos, and at the centre “the Aporetic: the zone of irreducible uncertainty”. The triquetra diagram is in the post.</p><p class="caveat"><b>Caveat</b> The slide credits “© Cognitive Edge Ltd”, the company’s old name; it is now The Cynefin Company.</p>
+  <p class="links"><a class="btn web" href="https://thecynefin.co/three-without-resolution/" rel="noopener">The Cynefin Company</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Simon Rohrer (3 April 2023). The ABCDE of Modern Enterprise Architecture. <i>Modern Enterprise Architecture</i> (Substack).</p>
+  <ul class="slides" aria-label="On the slides"><li>This was v1 of Modern Enterprise Architecture from 2023</li></ul>
+  <p class="what">The first version of this talk: five tenets, A to E, each set against what it replaces. The 2025 version, <i>Architecting for Outcomes</i>, is on video.</p>
+  <p class="links"><a class="btn web" href="https://modernenterprisearchitecture.substack.com/p/modern-enterprise-architecture-a" rel="noopener">Substack</a><a class="btn web" href="https://speakerdeck.com/simonrohrer/modern-enterprise-architecture-architecting-for-outcomes" rel="noopener">Slides, 2023 (Speaker Deck)</a><a class="btn web" href="https://www.youtube.com/watch?v=UMaZ-O2KRCw" rel="noopener">Watch the 2025 version (GOTO, YouTube)</a></p>
+</article>
+<article class="card" data-kinds="buy free">
+  <p class="cite">Roger Sessions (10 November 2008). The Job of the Enterprise Architect. <i>Simple Architectures for Complex Enterprises</i> (blog).</p>
+  <ul class="slides" aria-label="On the slides"><li>This used to be the intro</li></ul>
+  <p class="what">Keeping an architecture simple is “the primary responsibility of the enterprise architect”. “An organization that lacks a viable program in enterprise architecture will pay a severe cost in IT complexity. Complexity is the enemy. Enterprise Architecture is the solution. The only solution.”</p><p class="caveat"><b>Caveat</b> A blog post: the blog shares its name with his book of the same year (Microsoft Press, 2008), where he makes the same case: “Complexity is your enemy. Control it, or it will control you.” (p. 145).</p>
+  <p class="links"><a class="btn web" href="https://simplearchitectures.blogspot.com/2008/11/job-of-enterprise-architect.html" rel="noopener">Sessions’ blog</a><a class="btn free" href="https://ptgmedia.pearsoncmg.com/images/9780735625785/samplepages/9780735625785.pdf" rel="noopener">Book sample chapters (publisher PDF)</a><a class="btn buy" href="https://www.amazon.de/s?k=Roger+Sessions+Simple+Architectures+for+Complex+Enterprises&amp;i=stripbooks" rel="noopener">amazon.de</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Mark Eddleston (6 May 2026). Linear Mindsets in Complexity Drag. <i>The Pigeon Test</i> (Substack).</p>
+  <ul class="slides" aria-label="On the slides"><li>Now I think complexity science says something else</li></ul>
+  <p class="what">Many people take on the language of complexity but keep their linear habits. “The discipline is accepting that in complex systems, conditions may be tended but outcomes cannot be engineered.”</p><p class="caveat"><b>Caveat</b> The slide credits his book <i>The Pigeon Test: Why Change Fails</i> (2026). We found the line in this Substack post, where Eddleston quotes his own LinkedIn post; we could not check whether the book has it.</p>
+  <p class="links"><a class="btn web" href="https://thepigeontest.substack.com/p/linear-mindsets-in-complexity-drag" rel="noopener">Substack</a><a class="btn web" href="https://thepigeontest.com/" rel="noopener">The book’s website</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Barry M. O’Reilly (24 January 2026). Enterprise Architecture is never going to be saved by asking for a seat at the table or showing value. Post on LinkedIn.</p>
+  <ul class="slides" aria-label="On the slides"><li>EA treated management as a programming problem</li></ul>
+  <p class="what">EA “wanted to take the management need and turn it into something that was solved by the thinking of a programmer”, with “lines and boxes and schematics” in place of human management. “You can’t solve management with a programmer’s worldview. EA is a decades long attempt to do just that.”</p>
+  <p class="links"><a class="btn web" href="https://www.linkedin.com/posts/barry-o-reilly-b924657_enterprise-architecture-is-never-going-to-share-7420743560603402240-V27X/" rel="noopener">LinkedIn</a></p>
+</article>
+<article class="card" data-kinds="paywall">
+  <p class="cite">Barry M. O’Reilly (2021). Hyperliminal Coupling: Why Software Projects Fail Repeatedly. <i>Cutter Executive Update</i>, Business Agility &amp; Software Engineering Excellence, 22(4).</p>
+  <ul class="slides" aria-label="On the slides"><li>Humans bring complexity, from outside and inside</li></ul>
+  <p class="what">“Software systems are interesting because they involve a very complicated but ordered core of software, which is placed into a disordered system (the business, market, and society).” (p. 4). The disordered world follows fat-tailed distributions and looks predictable “until one day” it isn’t.</p>
+  <p class="links"><a class="btn paywall" href="https://www.cutter.com/article/hyperliminal-coupling-why-software-projects-fail-repeatedly" rel="noopener">Cutter (free login)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Gergely Orosz, with Sam Newman (7 October 2026). Building resilient systems with Sam Newman. <i>The Pragmatic Engineer</i> (podcast).</p>
+  <ul class="slides" aria-label="On the slides"><li>Humans bring complexity, from outside and inside</li></ul>
+  <p class="what">On graceful extensibility, which means dealing with surprise: “What about things we don’t expect? If we don’t expect it, this is now not about computers, it’s about humans… We couldn’t expect the rabbits.” Earlier, Newman tells of rabbits that moved into the ducts between office buildings and ate the network cables.</p><p class="caveat"><b>Caveat</b> The “…” leaves out one sentence. Checked against the automatic captions, not a verified transcript.</p>
+  <p class="links"><a class="btn web" href="https://www.youtube.com/watch?v=a0sZV0qIbI0&amp;t=5284s" rel="noopener">Watch from 1:28:04 (YouTube)</a><a class="btn web" href="https://newsletter.pragmaticengineer.com/p/building-resilient-systems-with-sam" rel="noopener">The Pragmatic Engineer (with transcript)</a></p>
+</article>
+<article class="card" data-kinds="buy">
+  <p class="cite">Ralph D. Stacey (1992). <i>Managing the Unknowable: Strategic Boundaries Between Order and Chaos in Organizations</i>. Jossey-Bass.</p>
+  <ul class="slides" aria-label="On the slides"><li>The world they face is a paradox: intertwined order and disorder</li><li>We look where the light is</li></ul>
+  <p class="what">Managers face a world of stability and instability at once, yet they explain it almost always from the side of order (p. 20). Then the joke about the man who looks for his coin under the streetlamp “because the light is better here”. Most of us explain a messy world “using mental models that focus on order, stability, cohesion, consistency, and equilibrium” (pp. 20–21).</p>
+  <p class="links"><a class="btn buy" href="https://www.amazon.de/s?k=Stacey+Managing+the+Unknowable&amp;i=stripbooks" rel="noopener">amazon.de</a></p>
+</article>
+</div></section>
+<section id="part-1"><h2>Part 1<span class="p">:</span> Start where you are<span class="p">,</span> then navigate</h2>
+<div class="list">
+<article class="card" data-kinds="buy">
+  <p class="cite">George E. P. Box &amp; Norman R. Draper (1987). <i>Empirical Model-Building and Response Surfaces</i>. Wiley.</p>
+  <ul class="slides" aria-label="On the slides"><li>Models, maps and plans</li></ul>
+  <p class="what">A polynomial is only an approximation, but that need not make it less useful, “because all models are approximations. Essentially, all models are wrong, but some are useful.” (p. 424).</p><p class="caveat"><b>Caveat</b> Box first wrote “all models are wrong” in a 1976 paper, <i>Science and Statistics</i>. The full line is from this 1987 book.</p>
+  <p class="links"><a class="btn buy" href="https://www.amazon.de/s?k=Box+Draper+Empirical+Model-Building+and+Response+Surfaces&amp;i=stripbooks" rel="noopener">amazon.de</a></p>
+</article>
+<article class="card" data-kinds="borrow">
+  <p class="cite">Alfred Korzybski (1933). A Non-Aristotelian System and its Necessity for Rigour in Mathematics and Physics. Supplement III in <i>Science and Sanity</i>. International Non-Aristotelian Library.</p>
+  <ul class="slides" aria-label="On the slides"><li>Models, maps and plans</li></ul>
+  <p class="what">“A map is not the territory it represents, but, if correct, it has a similar structure to the territory, which accounts for its usefulness.”</p><p class="caveat"><b>Caveat</b> Korzybski gave the paper in December 1931; it was first printed in <i>Science and Sanity</i> (1933). His wording is “A map is not the territory it represents”, not “The map is not the territory”.</p>
+  <p class="links"><a class="btn borrow" href="https://archive.org/details/sciencesanityint00korz" rel="noopener">Borrow free (archive.org)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Associated Press (19 August 1987). Biggs has plans for Tyson. <i>Oroville Mercury-Register</i>, p. 1B.</p>
+  <ul class="slides" aria-label="On the slides"><li>Models, maps and plans</li></ul>
+  <p class="what">Tyrell Biggs said he had a plan to beat Mike Tyson. Tyson: “Everybody has plans until they get hit for the first time.” Quote Investigator found no earlier use. Later versions became “punched in the mouth”.</p>
+  <p class="links"><a class="btn web" href="https://quoteinvestigator.com/2021/08/25/plans-hit/" rel="noopener">Quote Investigator</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Helmuth von Moltke (1871). Ueber Strategie. In <i>Moltkes Militärische Werke</i>, II, Zweiter Theil (1900), pp. 287–291. Mittler und Sohn.</p>
+  <ul class="slides" aria-label="On the slides"><li>Models, maps and plans</li></ul>
+  <p class="what">“Kein Operationsplan reicht mit einiger Sicherheit über das erste Zusammentreffen mit der feindlichen Hauptmacht hinaus.” In Quote Investigator’s translation: “No plan of operations extends with any certainty beyond the first encounter with the main enemy forces.”</p><p class="caveat"><b>Caveat</b> The English is Quote Investigator’s translation; others differ. “No plan survives contact with the enemy” is a later shortening.</p>
+  <p class="links"><a class="btn web" href="https://quoteinvestigator.com/2021/05/04/no-plan/" rel="noopener">Quote Investigator</a><a class="btn free" href="https://books.google.com/books?id=aHM-AAAAYAAJ&amp;q=%22einiger+Sicherheit%22" rel="noopener">German original (Google Books, full view)</a></p>
+</article>
+<article class="card" data-kinds="buy">
+  <p class="cite">Harish Jose &amp; Venkatesh Krishnamurthy (2025). <i>Connecting the Dots… Reflections on The Toyota Production System</i>. Cyb3rSyn Labs.</p>
+  <ul class="slides" aria-label="On the slides"><li>Go and see the work; talk to the people</li><li>Go see, ask why, show respect.</li></ul>
+  <p class="what">Chapter 8, ‘Art of Genchi Genbutsu’, p. 117: “At its heart, Genchi Genbutsu rejects abstraction. It is not about relying on dashboards, reports, or hearsay.” The same page gives Fujio Cho’s mantra: “Go see, ask why, show respect.”</p><p class="caveat"><b>Caveat</b> The book quotes Cho without a source for the line. See John Shook below for a first-hand account.</p>
+  <p class="links"><a class="btn buy" href="https://cyb3rsyn.com/products/connecting-the-dots-book" rel="noopener">Cyb3rSyn Labs</a><a class="btn buy" href="https://leanpub.com/connecting-the-dots" rel="noopener">Leanpub (ebook)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Melvin E. Conway (April 1968). How do committees invent? <i>Datamation</i>, 14(4), 28–31.</p>
+  <ul class="slides" aria-label="On the slides"><li>Systems copy how their organisations communicate</li><li>Value designs organisations</li></ul>
+  <p class="what">The paper’s conclusion: organisations that design systems “are constrained to produce designs which are copies of the communication structures of these organizations.” Conway’s own short form of the thesis, on his website: “Any organization that designs a system (defined broadly) will produce a design whose structure is a copy of the organization’s communication structure.”</p><p class="caveat"><b>Caveat</b> The second quote is Conway’s later one-line restatement on melconway.com, not a sentence from the 1968 paper.</p>
+  <p class="links"><a class="btn free" href="https://www.melconway.com/Home/pdf/committees.pdf" rel="noopener">Free PDF (Conway’s site)</a><a class="btn web" href="https://www.melconway.com/Home/Committees_Paper.html" rel="noopener">melconway.com</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Ruth Malan (13 February 2008). Conway’s Law. <i>Trace in the Sand</i> (blog).</p>
+  <ul class="slides" aria-label="On the slides"><li>Each side constrains the other</li><li>Organisation architects and system architects</li></ul>
+  <p class="what">Malan’s paraphrase of Conway: “if the architecture of the system and the architecture of the organization are at odds, the architecture of the organization wins.” And: “system architects (who we call architects) and business/organization architects (who we call managers) should not work as if one has no impact on the other.”</p><p class="caveat"><b>Caveat</b> The first line is Malan’s own paraphrase of Conway’s law, as she says. The original page is gone, so the link is the Wayback Machine copy.</p>
+  <p class="links"><a class="btn free" href="https://web.archive.org/web/20181022001505/http://traceinthesand.com:80/blog/2008/02/13/conways-law/" rel="noopener">Full text (Wayback Machine)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Allan Kelly (2014). Continuous Delivery and Conway’s Law. Talk, London Continuous Delivery meetup. Transcript by Thierry de Pauw, <i>ThinkingLabs</i>.</p>
+  <ul class="slides" aria-label="On the slides"><li>Each side constrains the other</li></ul>
+  <p class="what">Kelly’s “reverse Conway’s law”: “Organisations with long-lived systems will adopt a structure modelled on the system.” Then: “Where all hell really breaks loose is when management decides to reorganise things. … And if you try to change the organisation, the software won’t let it happen.”</p><p class="caveat"><b>Caveat</b> The slide dates it 2018, the date of de Pauw’s transcript notes; the talk was in 2014. The quote is from the transcript, not checked against the video word for word.</p>
+  <p class="links"><a class="btn web" href="https://thinkinglabs.io/notes/2021/05/13/continuous-delivery-and-conways-law-allan-kelly.html" rel="noopener">Transcript (ThinkingLabs)</a><a class="btn web" href="https://www.youtube.com/watch?v=Cu0AU8vw3xw" rel="noopener">Watch (YouTube)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Winston Churchill (28 October 1943). House of Commons Rebuilding. <i>Hansard</i>, HC Deb vol 393 cc403–73.</p>
+  <ul class="slides" aria-label="On the slides"><li>We shape it, then it shapes us</li></ul>
+  <p class="what">Opening the debate on rebuilding the bombed Commons chamber: “We shape our buildings and afterwards our buildings shape us.” He argued for keeping the old chamber oblong, not semi-circular, because the shape supports the party system.</p><p class="caveat"><b>Caveat</b> The slide says the House of Lords; it was the House of Commons. Hansard has “afterwards”, not “afterward”.</p>
+  <p class="links"><a class="btn free" href="https://api.parliament.uk/historic-hansard/commons/1943/oct/28/house-of-commons-rebuilding" rel="noopener">Hansard (full debate)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Gene Kim (2022). The Cost of Coordination. DevOps masterclass, live-tweeted by BMK (@lbmkrishna), 14 July 2022.</p>
+  <ul class="slides" aria-label="On the slides"><li>We shape it, then it shapes us</li></ul>
+  <p class="what">Kim’s software version of Churchill’s line, from his masterclass on the cost of coordination: “We shape our architecture and then the architecture shapes us”. BMK’s thread posted photos of the slides.</p><p class="caveat"><b>Caveat</b> The slide dates it 2023; the thread is from July 2022. Only the thread’s text was archived, not its photos, so we could not check the wording against the slide photo.</p>
+  <p class="links"><a class="btn free" href="https://web.archive.org/web/20231015100627/https://twitter.com/lbmkrishna/status/1547447927567953920" rel="noopener">BMK’s thread (Wayback Machine)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">James Coplien (2021). Scaling Agile: The Small-is-Beautiful of Hubs. <i>GOTO 2021</i> (video).</p>
+  <ul class="slides" aria-label="On the slides"><li>Conway’s law works both ways</li></ul>
+  <p class="what">“Grady Booch and I had an argument about this on Twitter… And we went to Mel Conway, and Mel said, yeah, it’s both ways — but they’re homomorphic.” Coplien goes on: if you constrain the organisation, “this constrains your architecture”.</p><p class="caveat"><b>Caveat</b> Transcribed from YouTube’s automatic captions and lightly cleaned (12:44–13:52); not an official transcript.</p>
+  <p class="links"><a class="btn web" href="https://www.youtube.com/watch?v=Va8QedfiC9k&amp;t=764s" rel="noopener">Watch from 12:44 (YouTube)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Sahar Hadidimoud, Andrew Curry, Trace Gale &amp; Sue Robinson (2026). Three Horizons in practice: a practitioner’s guide. In T. Gale, A. Curry, S. Robinson &amp; S. Hadidimoud (eds), <i>The Three Horizons Approach: Innovation Tools for Systems Transformation and Sustainable Futures</i>. Palgrave Macmillan.</p>
+  <ul class="slides" aria-label="On the slides"><li>Look for the future already in the present</li></ul>
+  <p class="what">p. 105: “a timeframe in Three Horizons is not a literal timeline with tick marks—it provides a sense of scale and pace for change, not a fixed sequence of dated events or interventions.” The guide asks facilitators to look for the “pockets of the future in the present”: the weak signals of a possible third horizon.</p><p class="caveat"><b>Caveat</b> The slide credits the framework to Bill Sharpe and Tony Hodgson (the International Futures Forum version), not to the chapter’s authors.</p>
+  <p class="links"><a class="btn free" href="https://doi.org/10.1007/978-3-032-19004-8_6" rel="noopener">Free to read (Springer, open access)</a></p>
+</article>
+<article class="card" data-kinds="buy free">
+  <p class="cite">Andrew Curry &amp; Anthony Hodgson (2008). Seeing in multiple horizons: connecting futures to strategy. <i>Journal of Futures Studies</i>, 13(1), 1–20.</p>
+  <ul class="slides" aria-label="On the slides"><li>Look for the future already in the present</li></ul>
+  <p class="what">The early paper on the Three Horizons method. Horizon 3 shows up in the present as weak signals, “pockets of the future embedded in the present”.</p><p class="caveat"><b>Caveat</b> Bill Sharpe’s <i>Three Horizons: The Patterning of Hope</i> (Triarchy Press, 2013; 2nd edn 2020) is the fuller account; it is not free.</p>
+  <p class="links"><a class="btn free" href="https://jfsdigital.org/wp-content/uploads/2014/01/131-A01.pdf" rel="noopener">Free PDF (Journal of Futures Studies)</a><a class="btn buy" href="https://www.triarchypress.net/three-horizons.html" rel="noopener">Sharpe’s book (Triarchy Press)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Mark Eddleston (20 October 2026). Rocket Science for Pigeons. <i>The Pigeon Test</i> (Substack).</p>
+  <ul class="slides" aria-label="On the slides"><li>Sense and respond, don’t program</li></ul>
+  <p class="what">“Applying rocket logic to pigeon problems is a category error, and it’s why so much organisational change disappoints.” Rocket logic expects set steps to give a predictable result; organisations are made of people who adapt to each other, so the same action can give different outcomes.</p>
+  <p class="links"><a class="btn web" href="https://thepigeontest.substack.com/p/rocket-science-for-pigeons" rel="noopener">Substack</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Duncan Weldon (17 October 2022). The Big Idea: Do governments really control their economies? <i>The Guardian</i>.</p>
+  <ul class="slides" aria-label="On the slides"><li>Governance: Gubernator, Kybernetes → Helmsman, Cybernetics</li></ul>
+  <p class="what">“In a country like Britain, being an economic policymaker is more akin to sailing a boat than driving a car. A government can tack and trim with a greater or lesser degree of skill, but in the final analysis it cannot change the direction of the wind.”</p><p class="caveat"><b>Caveat</b> The etymology on the slide (govern, from Latin <i>gubernare</i> and Greek <i>kybernan</i>, to steer) is not from Weldon’s article.</p>
+  <p class="links"><a class="btn web" href="https://www.theguardian.com/books/2022/oct/17/the-big-idea-do-governments-really-control-their-economies" rel="noopener">The Guardian</a></p>
+</article>
+</div></section>
+<section id="part-2"><h2>Part 2<span class="p">:</span> Integrate the people<span class="p">,</span> the technology<span class="p">,</span> and the value</h2>
+<div class="list">
+<article class="card" data-kinds="free">
+  <p class="cite">Xin Yao (12 March 2026). Sociotechnical Architecture – Having Your Agile and Your Agility Too. Keynote, <i>Agile Meets Architecture 2026</i>, Berlin (video).</p>
+  <ul class="slides" aria-label="On the slides"><li>Integrate the people, the technology, &amp; the value</li></ul>
+  <p class="what">Xin Yao asks how we can keep our Agile discipline and our agility too, and proposes sociotechnical architecture as the way. One slide sets “Alignment (Looks neat)” against “Coherence (Looks alive)”. In the talk she says “We need to align”, but that architecting how an organisation grows “is really this distributed coherence”.</p><p class="caveat"><b>Caveat</b> The headline “Integrate the people, the technology, &amp; the value” is ours, not hers. Only the alignment/coherence contrast comes from the talk.</p>
+  <p class="links"><a class="btn web" href="https://www.youtube.com/watch?v=ww-osm-IZjI&amp;t=2050s" rel="noopener">Watch from 34:10 (YouTube)</a><a class="btn web" href="https://speakerdeck.com/xinyao/2026-ama-keynote-sociotechnical-architecture-having-your-agile-and-agility-too" rel="noopener">Slides (Speaker Deck)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Gien Verschatse, with João Rosa (22 April 2026). The Learning Organisation with João Rosa. <i>Aardling</i>.</p>
+  <ul class="slides" aria-label="On the slides"><li>Every system and level of the organisation sits in a web of dependencies</li><li>Agents &amp; teams need context and a harness</li></ul>
+  <p class="what">An interview. Rosa: “Teams need agency — but they also need to understand the web of dependencies they sit within.” A 20-person startup, a bank with 2,000 people and a global company are different games. “What teams actually need isn’t unlimited autonomy but clear boundaries within which they can act freely.”</p>
+  <p class="links"><a class="btn web" href="https://aardling.eu/en/insights/the-learning-organisation-with-joao-rosa" rel="noopener">Aardling</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Ivo Velitchkov (2020). <i>Essential Balances: Stop Looking and Start Seeing What Makes Organizations Work</i>. Kvistgaard.</p>
+  <ul class="slides" aria-label="On the slides"><li>Organisations nest, all the way up</li><li>Lubricant and tape</li></ul>
+  <p class="what">A book about three balances in organisations: autonomy and cohesion, stability and diversity, exploration and exploitation. The slides use its answer to “What is an organization made of?” (“organizations”) and its opening two rules: if a part of the boat doesn’t move but should, use lubricant; if a part moves but shouldn’t, use adhesive tape.</p><p class="caveat"><b>Caveat</b> The slides date the book 2026, but it came out in November 2020. We have not checked either quote word for word against the book.</p>
+  <p class="links"><a class="btn web" href="https://essentialbalances.com/" rel="noopener">Author’s book site (buying options)</a><a class="btn web" href="https://www.linkandth.ink/p/autonomy-and-cohesion" rel="noopener">Velitchkov: Autonomy and Cohesion (Link &amp; Think)</a></p>
+</article>
+<article class="card" data-kinds="free paywall">
+  <p class="cite">Eric L. Trist &amp; Ken W. Bamforth (1951). Some social and psychological consequences of the longwall method of coal-getting. <i>Human Relations</i>, 4(1), 3–38.</p>
+  <ul class="slides" aria-label="On the slides"><li>Integration is always sociotechnical</li></ul>
+  <p class="what">Where socio-technical systems thinking starts. Mechanised longwall mining split miners into single-task shifts and broke up the small self-managing groups that had made the work bearable and safe.</p>
+  <p class="links"><a class="btn free" href="http://www.moderntimesworkplace.com/archives/ericsess/sessvol2/Trist___Bamforth_1.pdf" rel="noopener">Free shortened version (Tavistock anthology)</a><a class="btn paywall" href="https://doi.org/10.1177/001872675100400101" rel="noopener">Full paper (paywalled)</a></p>
+</article>
+<article class="card" data-kinds="borrow free">
+  <p class="cite">Paul R. Lawrence &amp; Jay W. Lorsch (1967). New management job: the integrator. <i>Harvard Business Review</i>, 45(6), 142–151.</p>
+  <ul class="slides" aria-label="On the slides"><li>Autonomy and coherence pull against each other</li><li>Integrators win through expertise, not authority</li><li>Integrators translate between floors</li><li>Confront problems; keep force in reserve</li></ul>
+  <p class="what">A study of ten organisations in three industries. Firms need more specialisation (differentiation) and tighter coordination (integration), but “these two needs are essentially antagonistic, and one can usually be achieved only at the expense of the other.” Effective integrators help firms get both. They are influential “because of their knowledge and expertise”, not “the formal authority of their positions”, and they “speak the language of each of the specialist groups”. The firms that integrated best mostly settled conflict by confrontation, “placing all relevant facts before the disputants”. They also used some forcing as a backup, while smoothing over differences meant “nothing happens”.</p><p class="caveat"><b>Caveat</b> The “happy as larks” words are a manager’s, which the authors quote. The original reads “In the more effective, the integrators…”: the slide adds “[organizations]”. The online text has no print page numbers.</p>
+  <p class="links"><a class="btn free" href="https://web.archive.org/web/20230923145648/https://hbr.org/1967/11/new-management-job-the-integrator" rel="noopener">Full text (Wayback Machine, 2023 capture)</a><a class="btn web" href="https://hbr.org/1967/11/new-management-job-the-integrator" rel="noopener">HBR (a few free articles a month)</a><a class="btn borrow" href="https://archive.org/details/organizationenvi0000paul" rel="noopener">Their book, Organization and Environment (borrow free, archive.org)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Gregor Hohpe (2017). Enterprise Architecture = Architecting the Enterprise? <i>YOW! 2017</i> (video).</p>
+  <ul class="slides" aria-label="On the slides"><li>The architect elevator</li></ul>
+  <p class="what">Hohpe on why enterprise architects are often seen as ivory-tower residents, and what value they actually bring: connecting the levels of the organisation.</p><p class="caveat"><b>Caveat</b> The slide says YOW! 2026. The talk was recorded at YOW! 2017, and he gave it again at YOW! 2018.</p>
+  <p class="links"><a class="btn web" href="https://www.youtube.com/watch?v=hhlxFtV_tZo" rel="noopener">Watch YOW! 2017 (YouTube)</a><a class="btn web" href="https://www.youtube.com/watch?v=XiM3Chty94w" rel="noopener">Watch YOW! 2018 (YouTube)</a></p>
+</article>
+<article class="card" data-kinds="buy">
+  <p class="cite">Stafford Beer (1979). <i>The Heart of Enterprise</i>. Wiley.</p>
+  <ul class="slides" aria-label="On the slides"><li>Integrators translate between floors</li></ul>
+  <p class="what">Beer’s third principle of organisation (p. 101): “Wherever the information carried on a channel capable of distinguishing a given variety crosses a boundary, it undergoes transduction.” Every channel between systems needs a translator, a transducer, with enough variety for the channel.</p><p class="caveat"><b>Caveat</b> We checked the wording against Beer’s own list of his principles, which cites p. 101, in his 1984 paper on the Viable System Model. We have not checked it against the book itself.</p>
+  <p class="links"><a class="btn buy" href="https://www.wiley.com/en-us/The+Heart+of+Enterprise-p-9780471948377" rel="noopener">Wiley (1994 reissue)</a><a class="btn buy" href="https://www.amazon.de/s?k=Heart+of+Enterprise+Stafford+Beer&amp;i=stripbooks" rel="noopener">amazon.de</a></p>
+</article>
+<article class="card" data-kinds="buy free">
+  <p class="cite">Gregor Hohpe (2020). <i>The Software Architect Elevator: Redefining the Architect’s Role in the Digital Enterprise</i>. O’Reilly.</p>
+  <ul class="slides" aria-label="On the slides"><li>Integrators translate between floors</li></ul>
+  <p class="what">The architect rides the elevator between the executive penthouse and the IT engine room. The architect connects business strategy with the people who build the technology, and stops on whichever floor needs help.</p>
+  <p class="links"><a class="btn web" href="https://martinfowler.com/articles/architect-elevator.html" rel="noopener">Hohpe: The Architect Elevator (free article, 2017)</a><a class="btn web" href="https://architectelevator.com/book/" rel="noopener">Book page (Hohpe’s site)</a><a class="btn buy" href="https://www.amazon.de/s?k=Software+Architect+Elevator+Hohpe&amp;i=stripbooks" rel="noopener">amazon.de</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Chris Atkinson &amp; Luke Harland (October 2026). Guardrails, not Gatekeepers: Atom Bank’s Journey to Conversational Governance. <i>FastFlowConf 2026</i> (video).</p>
+  <ul class="slides" aria-label="On the slides"><li>Autonomy alone grows new silos</li><li>Most decisions are hats or haircuts; a few are tattoos</li><li>Make review a conversation, not a checkpoint</li></ul>
+  <p class="what">Atom Bank moved to long-lived value-stream teams. Atkinson: “a new kind of silo emerged within the value stream teams themselves”, and teams worked to “implicit norms, rather than kind of transparent standards”. Their answer was a framework they wrote together with risk and delivery people, plus decisions sorted by how easy they are to reverse: “two-way door decisions [are] easily reversible. That’s your hat and your haircut… Once you get to the point of getting a tattoo though, you might want to take a pause.” Harland on the Technical Design Authority: “TDA is no longer a checkpoint. It’s just a way to interact with your colleagues.”</p><p class="caveat"><b>Caveat</b> One bank’s account, by its own staff. Quotes are from YouTube’s automatic captions, lightly cleaned; “Streamlined teams” in the captions is probably “stream-aligned teams”. Atkinson credits hats, haircuts and tattoos to Emily Webber and, through her, James Clear. The one-way and two-way doors are Amazon’s terms.</p>
+  <p class="links"><a class="btn web" href="https://www.youtube.com/watch?v=k10n4Ixi-Xw&amp;t=134s" rel="noopener">Watch: new silos, from 2:14 (YouTube)</a><a class="btn web" href="https://www.youtube.com/watch?v=k10n4Ixi-Xw&amp;t=569s" rel="noopener">Hats, haircuts and tattoos, from 9:29</a><a class="btn web" href="https://www.youtube.com/watch?v=k10n4Ixi-Xw&amp;t=820s" rel="noopener">TDA as a conversation, from 13:40</a></p>
+</article>
+<article class="card" data-kinds="paywall">
+  <p class="cite">Arie Y. Lewin, Chris P. Long &amp; Timothy N. Carroll (1999). The coevolution of new organizational forms. <i>Organization Science</i>, 10(5), 535–550.</p>
+  <ul class="slides" aria-label="On the slides"><li>Organisation, system and environment co-evolve</li></ul>
+  <p class="what">Organisations and their environments evolve together. “The theory considers organizations, their populations, and their environments as the interdependent outcome of managerial actions, institutional influences, and extra-institutional changes (technological, sociopolitical, and other environmental phenomena).” It builds on March’s exploration and exploitation, and stresses effects that run in several directions, nested and lagged.</p>
+  <p class="links"><a class="btn paywall" href="https://www.jstor.org/stable/2640316" rel="noopener">JSTOR</a><a class="btn paywall" href="https://doi.org/10.1287/orsc.10.5.535" rel="noopener">Publisher (paywalled)</a></p>
+</article>
+<article class="card" data-kinds="free paywall">
+  <p class="cite">Ian Miell (forthcoming). <i>Follow the Money</i>. O’Reilly (early release).</p>
+  <ul class="slides" aria-label="On the slides"><li>Value designs organisations</li></ul>
+  <p class="what">Miell builds on Conway’s law: the communication structures Conway described are themselves shaped by how money flows through an organisation. Jamie Dobson’s name for this is “Miell’s Law”: “Organisations that design systems are constrained to produce systems that reflect the financial structures and incentives of those organisations.”</p><p class="caveat"><b>Caveat</b> The book is still in early release; O’Reilly’s pages give December 2026 and April 2027 as the release date. The slide’s quote is Dobson’s wording of Miell’s idea (Substack, 5 June 2026), not a line we found in the book.</p>
+  <p class="links"><a class="btn web" href="https://jamiedobson.substack.com/p/conways-law" rel="noopener">Jamie Dobson on Miell’s Law (Substack)</a><a class="btn paywall" href="https://www.oreilly.com/library/view/follow-the-money/9798341661349/" rel="noopener">O’Reilly (early release, subscribers)</a></p>
+</article>
+<article class="card" data-kinds="paywall">
+  <p class="cite">Ron Sanchez &amp; Joseph T. Mahoney (1996). Modularity, flexibility, and knowledge management in product and organization design. <i>Strategic Management Journal</i>, 17(S2), 63–76.</p>
+  <ul class="slides" aria-label="On the slides"><li>Value designs organisations</li></ul>
+  <p class="what">“Although organizations ostensibly design products, it can also be argued that products design organizations, because the coordination tasks implicit in specific product designs largely determine the feasible organization designs for developing and producing those products” (p. 64).</p><p class="caveat"><b>Caveat</b> The paper says “products design organizations”: the slide’s point that value designs organisations builds on it.</p>
+  <p class="links"><a class="btn paywall" href="https://doi.org/10.1002/smj.4250171107" rel="noopener">Publisher (paywalled)</a></p>
+</article>
+<article class="card" data-kinds="free paywall">
+  <p class="cite">Frederick P. Brooks, Jr. (1986). No Silver Bullet: Essence and Accidents of Software Engineering. <i>Information Processing 86</i> (IFIP Tenth World Computing Conference), 1069–1076. Reprinted in <i>Computer</i>, 20(4), 10–19 (1987).</p>
+  <ul class="slides" aria-label="On the slides"><li>Dependencies are the shape of your value</li></ul>
+  <p class="what">Brooks splits the difficulties of software into essence, “the difficulties inherent in the nature of the software”, and accidents, those that “today attend its production but which are not inherent”. “The essence of a software entity is a construct of interlocking concepts: data sets, relationships among data items, algorithms, and invocations of functions.”</p><p class="caveat"><b>Caveat</b> Brooks writes about essential and accidental difficulty, not dependencies; applying the split to coupling between teams and systems is the talk’s step.</p>
+  <p class="links"><a class="btn free" href="https://www.cs.unc.edu/techreports/86-020.pdf" rel="noopener">Free PDF (UNC technical report, 1986)</a><a class="btn paywall" href="https://doi.org/10.1109/MC.1987.1663532" rel="noopener">IEEE Computer, 1987 (paywalled)</a></p>
+</article>
+<article class="card" data-kinds="free paywall">
+  <p class="cite">Peter Naur (1985). Programming as theory building. <i>Microprocessing and Microprogramming</i>, 15(5), 253–261.</p>
+  <ul class="slides" aria-label="On the slides"><li>Even a one-line change zooms out to value</li></ul>
+  <p class="what">The real product of programming is the theory in the programmers’ heads: how the program fits the world and why it is built as it is. The code and the documents can’t fully hold it, and Naur argues that modifying a program well depends on having that theory.</p>
+  <p class="links"><a class="btn free" href="https://pages.cs.wisc.edu/~remzi/Naur.pdf" rel="noopener">Free PDF (course copy)</a><a class="btn paywall" href="https://doi.org/10.1016/0165-6074(85)90032-8" rel="noopener">Publisher</a></p>
+</article>
+<article class="card" data-kinds="buy free">
+  <p class="cite">Vlad Khononov (2024). <i>Balancing Coupling in Software Design: Universal Design Principles for Architecting Modular Software Systems</i>. Addison-Wesley.</p>
+  <ul class="slides" aria-label="On the slides"><li>There is always some coupling left</li></ul>
+  <p class="what">Coupling is what defines the knowledge shared between components; some ways of coupling add complexity, others make a system modular. The aim is to balance coupling, not to remove it. In her foreword Rebecca Wirfs-Brock puts it plainly: “there will always be coupling”.</p><p class="caveat"><b>Caveat</b> The book is dated © 2025; Pearson lists publication on 26 September 2024. Some listings use the subtitle <i>Successful Software Architecture in General and Distributed Systems</i>.</p>
+  <p class="links"><a class="btn free" href="https://ptgmedia.pearsoncmg.com/images/9780137353484/samplepages/9780137353484_Sample.pdf" rel="noopener">Free sample (forewords, preface, chapter 4)</a><a class="btn buy" href="https://www.informit.com/store/balancing-coupling-in-software-design-universal-design-9780137353484" rel="noopener">InformIT</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Scott Prugh (2022). Accounting vs. Physics: How Coordination Costs Are Killing Your Effectiveness. DevOps Enterprise Summit, Las Vegas (video).</p>
+  <ul class="slides" aria-label="On the slides"><li>But some coupling is accidental: remove teams if you can, and components and risk and cost fall</li></ul>
+  <p class="what">At UKG, collapsing teams and coupling took one change from four handoffs to one. With four handoffs the odds of no delay were “one in 16, or only 6%”; with one they were 50/50, “eight times better odds”. Cost fell from 1,920 hours to 360: “five times better”.</p><p class="caveat"><b>Caveat</b> One company’s worked example. The 360 hours are on Prugh’s summary slide; the transcript says “350” at that point.</p>
+  <p class="links"><a class="btn web" href="https://videos.itrevolution.com/watch/763825194/" rel="noopener">IT Revolution video library (free account)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Martin Fowler &amp; Rebecca Wirfs-Brock, with Ryan Lockard (13 May 2017). Agile Architecture with Martin Fowler and Rebecca Wirfs-Brock. <i>Agile Uprising</i> (podcast).</p>
+  <ul class="slides" aria-label="On the slides"><li>Decide neither too early nor too late</li></ul>
+  <p class="what">Fowler: up-front decisions are made “with the least knowledge that you’re ever going to have”, so make them “at the last responsible moment, which isn’t the last moment”. Wirfs-Brock: take that too far and it is “the last irresponsible moment”; she prefers “the most responsible moment”, between people who “wait too long” and “over planners”. From about 25:37 to 29:45.</p><p class="caveat"><b>Caveat</b> The quotes were transcribed by machine from the audio; speakers are inferred from context. Wirfs-Brock’s written version is her 2011 post “Agile Architecture Myths #2”.</p>
+  <p class="links"><a class="btn web" href="https://agileuprising.libsyn.com/agile-architecture-with-martin-fowler-and-rebecca-wirfs-brock" rel="noopener">Listen (Libsyn)</a><a class="btn web" href="https://wirfs-brock.com/rebecca/blog/2011/01/18/agile-architecture-myths-2-architecture-decisions-should-be-made-at-the-last-responsible-moment/" rel="noopener">Wirfs-Brock’s 2011 blog post</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Emily Webber (12 September 2025). Decision making at the right level with Hats, Haircuts and Tattoos. <i>emilywebber.co.uk</i>. After James Clear (1 February 2024), 3-2-1: On hats, haircuts, and tattoos.</p>
+  <ul class="slides" aria-label="On the slides"><li>Most decisions are hats or haircuts; a few are tattoos</li></ul>
+  <p class="what">Clear: “Most decisions are like hats”, cheap to try and undo; “Some decisions are like haircuts”, which take time to fix; “A few decisions are like tattoos.” Webber turns this into a guide for leaders: teams make hat decisions on their own. With tattoos, leaders move more slowly, involve the right people and ask whether the decision could be made smaller or less permanent.</p><p class="caveat"><b>Caveat</b> Clear credits Tim Ferriss with the idea that set him thinking.</p>
+  <p class="links"><a class="btn web" href="https://emilywebber.co.uk/decision-making-at-the-right-level-with-hats-haircuts-and-tattoos/" rel="noopener">Emily Webber’s blog</a><a class="btn web" href="https://jamesclear.com/3-2-1/february-1-2024" rel="noopener">James Clear’s newsletter</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Mats Magnussen (4 June 2026). Novo Nordisk ramt af »sikkerhedshændelse«: Genopbygger it-systemer fra bunden. <i>Ingeniøren</i>.</p>
+  <ul class="slides" aria-label="On the slides"><li>Sometimes central policy is the answer</li></ul>
+  <p class="what">“Novo Nordisk hit by ‘security incident’: rebuilding IT systems from scratch.” The company had been handling a security incident for several weeks and had to close and rebuild its internal IT development environments.</p><p class="caveat"><b>Caveat</b> The article is in Danish and partly paywalled; the slide shows a browser translation. One company’s incident, reported a week before Novo Nordisk’s own announcement on 11 June 2026.</p>
+  <p class="links"><a class="btn web" href="https://ing.dk/artikel/novo-nordisk-ramt-af-sikkerhedshaendelse-genopbygger-it-systemer-fra-bunden" rel="noopener">Ingeniøren (Danish, partly paywalled)</a><a class="btn web" href="https://www.novonordisk.com/news-and-media/latest-news/incident-update.html" rel="noopener">Novo Nordisk’s incident update</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Ruth Malan (October 2015). Design Visualization: Smoke and Mirrors. Talk, Software Architect conference, London (slides).</p>
+  <ul class="slides" aria-label="On the slides"><li>Govern continuously, through conversation</li></ul>
+  <p class="what">Malan pairs “Smoke (Intention) and Mirrors (Reflection)”: visual design to express “System Design Intent (what should be)”, and design visualisation to show “System Design Reflection (what is)”, the system as built.</p><p class="caveat"><b>Caveat</b> The drawing on the slide is ours, “after Ruth Malan”. This deck is the closest Malan source we found for the intention/reflection pairing; the practices on the drawing (whiteboards, ADRs, observability) are not from it.</p>
+  <p class="links"><a class="btn web" href="https://www.slideshare.net/RufM/design-visualization-smoke-and-mirrors-slides-249809199" rel="noopener">Slides (SlideShare)</a></p>
+</article>
+<article class="card" data-kinds="buy">
+  <p class="cite">Jonathan Smart, with Zsolt Berend, Myles Ogilvie &amp; Simon Rohrer (2020). <i>Sooner Safer Happier: Antipatterns and Patterns for Business Agility</i>. IT Revolution.</p>
+  <ul class="slides" aria-label="On the slides"><li>Turn transactions into relationships</li><li>Systems evolve in slopes and steps</li></ul>
+  <p class="what">Chapter 6 (Intelligent Control): instead of a separate sign-off from each specialism just before go-live, product teams engage with long-lived safety teams, organised by value stream, on a continuous basis. Chapter 7: constant improvement (kaizen) plus occasional step changes (kaikaku), which the book calls punctuated gradualism.</p><p class="caveat"><b>Caveat</b> Figures 6.3 and 6.4 are where the transactions-to-relationships slide comes from; we checked the chapter contents against a reader’s summary, not the printed figures.</p>
+  <p class="links"><a class="btn buy" href="https://itrevolution.com/product/sooner-safer-happier/" rel="noopener">IT Revolution</a><a class="btn buy" href="https://www.amazon.de/s?k=Sooner+Safer+Happier+Smart&amp;i=stripbooks" rel="noopener">amazon.de</a></p>
+</article>
+</div></section>
+<section id="part-3"><h2>Part 3<span class="p">:</span> Keep it alive</h2>
+<div class="list">
+<article class="card" data-kinds="free">
+  <p class="cite">Dan Davies (1 May 2026). Post on Bluesky.</p>
+  <ul class="slides" aria-label="On the slides"><li>Everyone can write software; someone has to maintain it</li></ul>
+  <p class="what">“Everyone has the power to write their own software”: cool, democratic, futuristic. “Everyone has the responsibility to maintain their own software”: hang on, what.</p><p class="caveat"><b>Caveat</b> The headline is our summary of the post, not Davies’s words.</p>
+  <p class="links"><a class="btn web" href="https://bsky.app/profile/dsquareddigest.bsky.social/post/3mkscxrv4zc24" rel="noopener">Bluesky</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Kent Beck (2020). Continued Learning: The Beauty of Maintenance. DDD Europe 2020 (video).</p>
+  <ul class="slides" aria-label="On the slides"><li>Treat everything as maintenance</li></ul>
+  <p class="what">Software costs roughly what it costs to change it, and “we spend most of the money in software development on maintenance”. In XP, “instead of spending 70% on maintenance, what if we spent 99% on maintenance?” Get it into production and build it up from there.</p><p class="caveat"><b>Caveat</b> DDD Europe lists it as a main-conference talk, not a keynote. Quote transcribed by machine from the audio (around 19:37–20:05); the slide has “spend” where Beck seems to say “spent”.</p>
+  <p class="links"><a class="btn web" href="https://www.youtube.com/watch?v=3gib0hKYjB0&amp;t=1177s" rel="noopener">Watch from 19:37 (YouTube)</a></p>
+</article>
+<article class="card" data-kinds="buy free">
+  <p class="cite">Stewart Brand (2026). <i>Maintenance: Of Everything, Part One</i>. Stripe Press.</p>
+  <ul class="slides" aria-label="On the slides"><li>Treat everything as maintenance</li></ul>
+  <p class="what">The first part of Brand’s book on maintenance: of sailboats, vehicles and weapons. The race between three sailors on the next slide is one of its chapters.</p><p class="caveat"><b>Caveat</b> Retailers give 20 January 2026; some library records say 2025. Draft chapters were published online first, and the print book differs from them.</p>
+  <p class="links"><a class="btn web" href="https://books.worksinprogress.co/book/maintenance-of-everything/introduction" rel="noopener">Draft chapters (Books in Progress)</a><a class="btn buy" href="https://press.stripe.com/maintenance-part-one" rel="noopener">Stripe Press</a></p>
+</article>
+<article class="card" data-kinds="borrow free">
+  <p class="cite">Calvin H. P. Pava (1983). <i>Managing New Office Technology: An Organizational Strategy</i>. Free Press.</p>
+  <ul class="slides" aria-label="On the slides"><li>Automate the line; talk through the tangle</li></ul>
+  <p class="what">Routine office work is linear and suits stable self-managing groups. Non-routine work is non-linear: it moves through “deliberations”, and the people around each one form “discretionary coalitions”. Conversations, not handoffs.</p><p class="caveat"><b>Caveat</b> The slide’s figure is Pava’s figure 3.4; we have not checked the figure against the book.</p>
+  <p class="links"><a class="btn borrow" href="https://archive.org/details/managingnewoffic0000pava" rel="noopener">Borrow free (archive.org)</a><a class="btn free" href="http://www.moderntimesworkplace.com/archives/ericsess/sessvol2/44TRPAVA.pdf" rel="noopener">Trist on Pava’s book (free)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">European Commission (13 March 2024). Commission Delegated Regulation (EU) 2024/1774 supplementing Regulation (EU) 2022/2554 with regard to regulatory technical standards specifying ICT risk management tools, methods, processes, and policies and the simplified ICT risk management framework. <i>Official Journal of the European Union</i>, L, 2024/1774, 25 June 2024. Article 17, ICT change management.</p>
+  <ul class="slides" aria-label="On the slides"><li>The independent function can be a robot</li></ul>
+  <p class="what">Article 17 sets what ICT change management procedures under DORA (Article 9(4)(e) of Regulation (EU) 2022/2554) must include, among them “mechanisms to ensure the independence of the functions that approve changes and the functions responsible for requesting and implementing those changes”. It asks for independent functions, not a change board.</p><p class="caveat"><b>Caveat</b> The slide says “DORA, Article 17”. The quote is from Article 17 of the Commission’s technical standards under DORA; Article 17 of DORA itself is about incident management.</p>
+  <p class="links"><a class="btn web" href="https://eur-lex.europa.eu/eli/reg_del/2024/1774/oj" rel="noopener">EUR-Lex (Delegated Regulation 2024/1774)</a><a class="btn web" href="https://eur-lex.europa.eu/eli/reg/2022/2554/oj" rel="noopener">EUR-Lex (DORA, Regulation 2022/2554)</a></p>
+</article>
+<article class="card" data-kinds="buy free">
+  <p class="cite">Gregor Hohpe (March 2026). Comment on his LinkedIn post of 8 March 2026 about multi-cloud and regional risk.</p>
+  <ul class="slides" aria-label="On the slides"><li>Platforms can carry governance</li></ul>
+  <p class="what">“Platforms are reified architecture, perhaps they can be reified governance also.” A platform is where architecture decisions already live. It can also carry the rules teams would otherwise have to check by hand. His book <i>Platform Strategy</i> (2024) covers platforms more fully.</p><p class="caveat"><b>Caveat</b> The line is in the comments, which LinkedIn shows only when you are signed in.</p>
+  <p class="links"><a class="btn web" href="https://www.linkedin.com/feed/update/urn:li:activity:7436324542555488256" rel="noopener">LinkedIn (the post and its comments)</a><a class="btn buy" href="https://leanpub.com/platformstrategy" rel="noopener">Platform Strategy (Leanpub)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Charles Betz &amp; Joseph Schiavone (18 September 2026). Will AI Eliminate Enterprise Architects? Forrester (blog).</p>
+  <ul class="slides" aria-label="On the slides"><li>With AI, architecture review can sink beneath the floorboards</li></ul>
+  <p class="what">“More architecture review? Yes. But we may not even call it that, and it will ‘sink beneath the floorboards’ of our ongoing delivery of digital systems, a continuous feedback loop.” Architects become “curators of enterprise context, stewards of architectural knowledge, designers of governance mechanisms”.</p>
+  <p class="links"><a class="btn web" href="https://www.forrester.com/blogs/will-ai-eliminate-enterprise-architects/" rel="noopener">Forrester blog</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Niles Eldredge &amp; Stephen Jay Gould (1972). Punctuated equilibria: an alternative to phyletic gradualism. In T. J. M. Schopf (ed.), <i>Models in Paleobiology</i>, 82–115. Freeman, Cooper &amp; Co.</p>
+  <ul class="slides" aria-label="On the slides"><li>Systems evolve in slopes and steps</li></ul>
+  <p class="what">The essay that challenged gradualism: species tend to stay stable for long periods, and change comes in short bursts.</p><p class="caveat"><b>Caveat</b> Eldredge and Gould argue against steady slopes. Putting slopes and steps together (“punctuated gradualism”) is the slide’s and <i>Sooner Safer Happier</i>’s step, not theirs.</p>
+  <p class="links"><a class="btn free" href="https://www.blackwellpublishing.com/ridley/classictexts/eldredge.pdf" rel="noopener">Free PDF (Blackwell’s Classic Texts)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Martin Fowler (2004; rewritten 22 August 2024). Strangler Fig Application. martinfowler.com (bliki).</p>
+  <ul class="slides" aria-label="On the slides"><li>Grow the new around the old</li></ul>
+  <p class="what">Strangler figs in Queensland grow around a host tree until the tree dies and the fig stands in its shape. Fowler’s name for replacing a legacy system gradually, by growing the new one around it.</p><p class="caveat"><b>Caveat</b> The slide shows the pattern; this is where the name comes from. The 2004 post was called “Strangler Application”; Fowler renamed it to bring back the fig.</p>
+  <p class="links"><a class="btn web" href="https://martinfowler.com/bliki/StranglerFigApplication.html" rel="noopener">martinfowler.com</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Simon Wardley (2016–2018). Doctrine. Chapter 4 of <i>Wardley Maps: Topographical intelligence in business</i>. Medium.</p>
+  <ul class="slides" aria-label="On the slides"><li>Doctrine: universally useful patterns</li></ul>
+  <p class="what">Doctrine is the set of principles that apply whatever your landscape or context: focus on user needs, use a common language, challenge assumptions; about forty in all, grouped into four phases. Wardley calls it not right but “consistently useful for the time being”.</p><p class="caveat"><b>Caveat</b> The slide’s table is credited to a variation by Steve Purkis. We found no published Purkis table: Erik Schön’s MapCamp 2020 slides group the doctrine into four phases with “Thanks Simon and Steve Purkis!”. “Universally useful patterns” is the usual short description of doctrine; we did not find it word for word in Wardley’s chapter.</p>
+  <p class="links"><a class="btn web" href="https://medium.com/wardleymaps/doctrine-8bb0015688e5" rel="noopener">Wardley’s chapter (Medium)</a><a class="btn web" href="https://learnwardleymapping.com/doctrine/" rel="noopener">The doctrine table (Learn Wardley Mapping, CC BY-SA)</a><a class="btn web" href="https://www.slideshare.net/slideshow/doctrine-or-dogma-challenge-your-assumptions-in-a-friendly-way/237386627" rel="noopener">Erik Schön’s slides crediting Purkis (SlideShare)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Margaret-Anne Storey (2026). From Technical Debt to Cognitive and Intent Debt: Rethinking Software Health in the Age of AI. arXiv:2603.22106.</p>
+  <ul class="slides" aria-label="On the slides"><li>AI piles up three kinds of debt, faster</li></ul>
+  <p class="what">A Triple Debt Model: technical debt in the code, cognitive debt in people (lost shared understanding), and intent debt in what is written down (missing rationale, goals and constraints, for people and for agents). “Generative AI is accelerating software development”, and code arrives faster than teams can understand it.</p><p class="caveat"><b>Caveat</b> Cited as version 4 of the preprint (6 April 2026). The slide shows the paper’s own figure.</p>
+  <p class="links"><a class="btn free" href="https://arxiv.org/abs/2603.22106" rel="noopener">Free (arXiv)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">IBM (1979, attributed). Pages from an internal training presentation, shared by @bumblebike on Twitter (February 2017).</p>
+  <ul class="slides" aria-label="On the slides"><li>A computer can never be held accountable</li><li>The project never ends</li></ul>
+  <p class="what">“A computer can never be held accountable, therefore a computer must never make a management decision.” Mike Hoye found that with the best copies of the photo rotated and the gamma adjusted, the next pages show through: a section headed “The Computer Mandate”, which includes the line that in the iterative world “the project never ends”.</p><p class="caveat"><b>Caveat</b> Known only from photos posted by one anonymous account, whose owner said they came from a parent’s 1979 IBM training papers, since lost. IBM’s archives could not find it. The second page is read through the paper, not from a clean copy.</p>
+  <p class="links"><a class="btn web" href="https://simonwillison.net/2025/Feb/3/a-computer-can-never-be-held-accountable/" rel="noopener">Simon Willison on its provenance</a><a class="btn web" href="https://mastodon.social/@mhoye/112459155499812117" rel="noopener">Mike Hoye on the hidden pages (Mastodon, 2024)</a><a class="btn web" href="https://x.com/bumblebike/status/832394003492564993" rel="noopener">The first photo (X, 2017)</a></p>
+</article>
+<article class="card" data-kinds="free">
+  <p class="cite">Stewart Brand (21 July 2022). The Maintenance Race. <i>Works in Progress</i>, Issue 08.</p>
+  <ul class="slides" aria-label="On the slides"><li>Three ways to maintain a boat</li></ul>
+  <p class="what">Three sailors in the 1968 Golden Globe race: “at heart, it was a contest of maintenance styles.” Knox-Johnston’s style was “Whatever comes, deal with it.” Crowhurst’s was “Hope for the best.” It killed him. Moitessier told Brand: “My rule is, a new boat every day.”</p><p class="caveat"><b>Caveat</b> Brand sums up Moitessier’s style as “Prepare for the worst.”; the slide uses his rule instead. The essay is a chapter of <i>Maintenance: Of Everything</i>.</p>
+  <p class="links"><a class="btn web" href="https://worksinprogress.co/issue/the-maintenance-race/" rel="noopener">Works in Progress</a></p>
+</article>
+</div></section>
+<section id="to-close"><h2>To close<span class="p">:</span> go see<span class="p">,</span> ask why<span class="p">,</span> show respect</h2>
+<div class="list">
+<article class="card" data-kinds="free">
+  <p class="cite">John Shook (June 2011). How to Go to the Gemba: Go See, Ask Why, Show Respect. <i>The Lean Post</i>, Lean Enterprise Institute.</p>
+  <ul class="slides" aria-label="On the slides"><li>Go see, ask why, show respect.</li></ul>
+  <p class="what">Shook, who worked under Cho: “The words of Toyota Chairman Fujio Cho, ‘Go see, ask why, show respect,’ are now famous as basic lean principles. I first heard Mr. Cho speak those words when I was deputy general manager during the early 1990s start-up of the Toyota Supplier Support Center in the U.S.”</p><p class="caveat"><b>Caveat</b> A first-hand account, not a text by Cho himself; we found no printed Cho source. First sent as an LEI e-letter in June 2011; the page now carries the date 20 January 2023.</p>
+  <p class="links"><a class="btn web" href="https://www.lean.org/the-lean-post/articles/how-to-go-to-the-gemba-go-see-ask-why-show-respect/" rel="noopener">Lean Enterprise Institute</a></p>
+</article>
+</div></section>
+  <p class="empty" id="empty" hidden>Nothing here with that kind of link<span class="p">.</span></p>
+
+  <footer>
+    <p>By Simon Rohrer<span class="p">.</span> Sources from the November 2026 edit of the talk<span class="p">,</span> given at the iSAQB Software Architecture Gathering<span class="p">,</span> Berlin<span class="p">,</span> in slide order<span class="p">.</span> Links checked 17 November 2026<span class="p">.</span></p>
+    <p>Where a slide and its source disagree on a date<span class="p">,</span> a title or the wording<span class="p">,</span> the citation here follows the source and the note says what the slide has<span class="p">.</span> Posts and talks from 2026 are early reports on a practice that is still changing<span class="p">;</span> read them with their dates<span class="p">.</span></p>
+    <p>Free copies are author<span class="p">,</span> repository<span class="p">,</span> publisher or course-page versions<span class="p">,</span> or older copies saved by the Wayback Machine<span class="p">.</span> Borrowing on archive.org needs a free account and lends one copy at a time<span class="p">.</span> The amazon.de links are plain searches<span class="p">,</span> not affiliate links<span class="p">;</span> your local library or bookshop works just as well<span class="p">.</span></p>
+  </footer>
+</div>
+
+<script>
+const buttons = [...document.querySelectorAll(".seg button")];
+const cards = [...document.querySelectorAll(".card")];
+const sections = [...document.querySelectorAll("section")];
+const empty = document.getElementById("empty");
+
+function show(f) {
+  buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.f === f)));
+  cards.forEach(c => { c.hidden = f !== "all" && !c.dataset.kinds.split(" ").includes(f); });
+  sections.forEach(s => { s.hidden = !s.querySelector(".card:not([hidden])"); });
+  empty.hidden = cards.some(c => !c.hidden);
+  try { localStorage.setItem("mea-reading-filter", f); } catch (e) {}
+}
+
+buttons.forEach(b => b.addEventListener("click", () => show(b.dataset.f)));
+let start = "all";
+try { start = localStorage.getItem("mea-reading-filter") || "all"; } catch (e) {}
+show(["all", "free", "borrow"].includes(start) ? start : "all");
+</script>
+</body>
+</html>
